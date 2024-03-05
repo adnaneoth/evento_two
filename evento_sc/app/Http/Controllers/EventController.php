@@ -13,7 +13,8 @@ class EventController extends Controller
      */
     public function index()
     {
-        //
+        $events = Event::all();
+        return view('//home//', compact('events'));
     }
 
     /**
@@ -21,7 +22,7 @@ class EventController extends Controller
      */
     public function create()
     {
-        //
+        return view('//form create// ');
     }
 
     /**
@@ -29,7 +30,21 @@ class EventController extends Controller
      */
     public function store(StoreEventRequest $request)
     {
-        //
+        $validatedData = $request->validate([
+            'title' => 'required',
+            'description' => 'required',
+            'date' => 'required|date',
+            'location' => 'required',
+            'organizer_id' => 'required|exists:users,id',
+            'category_id' => 'required|exists:categories,id',
+            'price' => 'required|numeric',
+            'nb_place' => 'required|numeric',
+        ]);
+
+        Event::create($validatedData);
+
+        return redirect()->route('//home//')->with('success', 'Event created successfully.');
+    
     }
 
     /**
@@ -45,7 +60,7 @@ class EventController extends Controller
      */
     public function edit(Event $event)
     {
-        //
+        return view('//form edit//', compact('event'));
     }
 
     /**
@@ -53,7 +68,21 @@ class EventController extends Controller
      */
     public function update(UpdateEventRequest $request, Event $event)
     {
-        //
+        $validatedData = $request->validate([
+            'title' => 'required',
+            'description' => 'required',
+            'date' => 'required|date',
+            'location' => 'required',
+            'organizer_id' => 'required|exists:users,id',
+            'category_id' => 'required|exists:categories,id',
+            'price' => 'required|numeric',
+            'nb_place' => 'required|numeric',
+        ]);
+
+        $event->update($validatedData);
+
+        return redirect()->route('//home//')->with('success', 'Event updated successfully.');
+    
     }
 
     /**
@@ -61,6 +90,8 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
-        //
+        $event->delete();
+
+        return redirect()->route('//home//')->with('success', 'Event deleted successfully.');
     }
 }
