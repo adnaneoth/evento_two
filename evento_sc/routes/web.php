@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CategorieController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,22 +16,41 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
 Route::get('/auth', function () {
     return view('auth.auth');})->name('auth');
+
+    Route::get('/adm', function () {
+        return view('admin');})->name('adm');
+
+    // Route::resource('dashboard', EventController::class);
+    Route::get('/dashboard', [EventController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+    Route::get('/', [EventController::class, 'welcome'])->name('welcome');
+    Route::delete('/events/{id}', [EventController::class, 'destroy'])->name('destroy');
+    Route::post('/events', [EventController::class, 'store'])->name('addevent');
+    Route::put('/events/{id}', [EventController::class, 'update'])->name('editevent');
+
+    Route::get('/allevents', [EventController::class, 'show'])->name('allevents');
+
+
+
+    Route::patch('/event/accept/{event}', [EventController::class, 'accept'])->name('accept');
+Route::patch('/event/refuse/{event}', [EventController::class, 'refuse'])->name('refuse');
+
+
+Route::resource('categorie', CategorieController::class);
+
+
+
+
 
 require __DIR__.'/auth.php';

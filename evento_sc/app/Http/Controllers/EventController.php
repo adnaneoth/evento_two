@@ -3,8 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
+use App\Models\Categorie;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
@@ -13,8 +18,51 @@ class EventController extends Controller
      */
     public function index()
     {
+
+        if (Auth::user()->hasRole('spectator')) {
+
+            $userId = Auth::id();
+        $events = Event::where('organizer_id', $userId)->get();
+        }
+        else{
+
+            $categories = Categorie::all();
+            $events = Event::with('user','categorie')->where('status','attend')->paginate(6);
+
+
+      }
+
+
+        
+        $categories = Categorie::all();
+        return view('dashboard', compact('events', 'categories'));
+    }
+
+
+
+    public function accept(Event $Event)
+    {
+        Event::where('id',$Event->id)->update(['status'=>'accept']);
+        return redirect(route('dashboard'));
+
+
+    }
+    public function refuse(Event $Event)
+    {
+        Event::where('id',$Event->id)->update(['status'=>'refus']);
+        return redirect(route('dashboard'));
+
+
+    }
+
+
+
+    public function welcome()
+    {
+
+        // Get events created by the current user
         $events = Event::all();
-        return view('//home//', compact('events'));
+        return view('welcome', compact('events'));
     }
 
     /**
@@ -22,7 +70,7 @@ class EventController extends Controller
      */
     public function create()
     {
-        return view('//form create// ');
+        //
     }
 
     /**
@@ -30,68 +78,68 @@ class EventController extends Controller
      */
     public function store(StoreEventRequest $request)
     {
-        $validatedData = $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-            'date' => 'required|date',
-            'location' => 'required',
-            'organizer_id' => 'required|exists:users,id',
-            'category_id' => 'required|exists:categories,id',
-            'price' => 'required|numeric',
-            'nb_place' => 'required|numeric',
-        ]);
 
+        $validatedData = $request->validated();
+        $validatedData += ["organizer_id" => auth()->user()->id];
         Event::create($validatedData);
 
-        return redirect()->route('//home//')->with('success', 'Event created successfully.');
-    
+        return redirect()->route('dashboard');
+
     }
+
 
     /**
      * Display the specified resource.
      */
     public function show(Event $event)
     {
-        //
+        $events = Event::where('status', 'accept')->paginate(6);
+        return view('allevents', compact('events'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Event $event)
+    public function edit(string $id)
     {
-        return view('//form edit//', compact('event'));
+        $events = Event::findOrfail($id);
+
+        return view('event.editEvent', compact('events'));
     }
 
     /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateEventRequest $request, Event $event)
+
+Update the specified resource in storage.*
+@param  \App\Http\Requests\UpdateEventsRequest  $request
+@param  \App\Models\Events  $events
+@return \Illuminate\Http\Response
+*/
+    public function update(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-            'date' => 'required|date',
-            'location' => 'required',
-            'organizer_id' => 'required|exists:users,id',
-            'category_id' => 'required|exists:categories,id',
-            'price' => 'required|numeric',
-            'nb_place' => 'required|numeric',
+        $event = Event::findOrFail($id);
+
+        $event->update([
+            'title' => $request->title,
+            'description' => $request->description,
+            'date' => $request->date,
+            'location' => $request->location,
+            'nb_place' => $request->nb_place,
+            'price' => $request->price,
+            'category_id' => $request->category_id,
         ]);
 
-        $event->update($validatedData);
 
-        return redirect()->route('//home//')->with('success', 'Event updated successfully.');
-    
+        return redirect()->route('dashboard')->with('success', 'Event updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Event $event)
+    public function destroy($id)
     {
+        $event = Event::find($id);
         $event->delete();
 
-        return redirect()->route('//home//')->with('success', 'Event deleted successfully.');
+        return redirect()->route('dashboard');
     }
 }
