@@ -51,6 +51,17 @@
                                 @endforeach
                             </select>
                         </div>
+
+                        <div class="form-group">
+                            <label for="autoAccept">Reservation Type:</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="auto" id="autoAccept"
+                                    name="autoAccept">
+                                <label class="form-check-label" for="autoAccept">
+                                    Auto Accept
+                                </label>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <input type="submit" class="btn btn-primary" value="Send">
@@ -65,6 +76,7 @@
     <section class="schedule-sec w-100 float-left padding-top padding-bottom">
         <div class="container">
             <div class="schedule-inner-sec text-center">
+
                 <div class="generic-title">
                     <h2 class="wow bounceInUp" data-wow-duration="2s">MY Events </h2>
                     <p class="wow bounceInUp" data-wow-duration="2s">Duis aute irure dolor in reprehenderit in voluptate
@@ -85,7 +97,8 @@
                     <div class="row">
                         <div class="col-lg-12">
                             @if ($errors->any())
-                                <div id="alert-2" class="alert alert-danger mt-2 lg:m-10 flex items-center p-4 mb-4 rounded-lg"
+                                <div id="alert-2"
+                                    class="alert alert-danger mt-2 lg:m-10 flex items-center p-4 mb-4 rounded-lg"
                                     role="alert">
 
                                     <span class="sr-only">error</span>
@@ -94,7 +107,7 @@
                                             <li>{{ $error }}</li>
                                         @endforeach
                                     </div>
-                                    
+
                                 </div>
                             @endif
 
@@ -136,9 +149,9 @@
                                                     <button type="button" class="btn btn-warning" data-toggle="modal"
                                                         data-target="#editEventModal{{ $event->id }}"><i
                                                             class="bi bi-pencil"></i></button>
-                                                    <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                        data-target="#detailsModal{{ $event->id }}"><i
-                                                            class="bi bi-info-circle"></i></button>
+                                                    <a href="{{ route('detail', $event->id) }}" class="btn btn-primary" >
+                                                        <i class="bi bi-info-circle"></i>
+                                                    </a>
                                                 @endcan
 
 

@@ -22,8 +22,8 @@ return new class extends Migration
             $table->unsignedBigInteger('category_id');
             $table->foreign('category_id')->references('id')->on('categories')->cascadeOnDelete()->cascadeOnUpdate();
             $table->float('price');
-            $table->enum('status', ['accept', 'refus', 'attend'])->default('attend');
-            $table->boolean("autoAccept")->default(true);
+            $table->enum('status', ['accepted', 'refused', 'pending'])->default('pending');
+            $table->enum("autoAccept",['manuel','auto']);
             $table->integer('nb_place');
             $table->timestamps();
         });

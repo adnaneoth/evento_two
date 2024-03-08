@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Models\Categorie;
+use App\Models\Reservation;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -19,21 +21,21 @@ class EventController extends Controller
     public function index()
     {
 
+       
+
+
+
         if (Auth::user()->hasRole('spectator')) {
 
             $userId = Auth::id();
-        $events = Event::where('organizer_id', $userId)->get();
+            $events = Event::where('organizer_id', $userId)->get();
         }
         else{
 
             $categories = Categorie::all();
-            $events = Event::with('user','categorie')->where('status','attend')->paginate(6);
-
+            $events = Event::with('user','categorie')->where('status','pending')->paginate(6);
 
       }
-
-
-        
         $categories = Categorie::all();
         return view('dashboard', compact('events', 'categories'));
     }
@@ -42,19 +44,16 @@ class EventController extends Controller
 
     public function accept(Event $Event)
     {
-        Event::where('id',$Event->id)->update(['status'=>'accept']);
+        Event::where('id',$Event->id)->update(['status'=>'accepted']);
         return redirect(route('dashboard'));
-
 
     }
     public function refuse(Event $Event)
     {
-        Event::where('id',$Event->id)->update(['status'=>'refus']);
+        Event::where('id',$Event->id)->update(['status'=>'refused']);
         return redirect(route('dashboard'));
 
-
     }
-
 
 
     public function welcome()
@@ -77,15 +76,20 @@ class EventController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(StoreEventRequest $request)
-    {
+{
+    $validatedData = $request->validated();
+    $validatedData += ["organizer_id" => auth()->user()->id];
 
-        $validatedData = $request->validated();
-        $validatedData += ["organizer_id" => auth()->user()->id];
-        Event::create($validatedData);
-
-        return redirect()->route('dashboard');
-
+    if ($request->has('autoAccept')) {
+        $validatedData['autoAccept'] = "auto";
+    } else {
+        $validatedData['autoAccept'] = "manuel";
     }
+
+    Event::create($validatedData);
+
+    return redirect()->route('dashboard');
+}
 
 
     /**
@@ -93,7 +97,7 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        $events = Event::where('status', 'accept')->paginate(6);
+        $events = Event::where('status', 'accepted')->whereDate('date', '>', Carbon::today())->paginate(6);
         return view('allevents', compact('events'));
     }
 
