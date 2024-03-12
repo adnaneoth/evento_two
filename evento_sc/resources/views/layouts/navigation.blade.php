@@ -43,6 +43,11 @@
 
             <nav id="navbar" class="navbar">
                 <ul>
+                    <li>@if(Auth::check() && Auth::user()->hasRole('organizer'))
+                        <div class="alert alert-danger" role="alert">
+                            Your account has been banned.
+                        </div>
+                    @endif</li>
                     <li><a class="nav-link scrollto active" href="{{ route('welcome') }}">Home</a></li>
                     <li><a class="nav-link scrollto" href="#about">About Us</a></li>
                     <li><a class="nav-link scrollto" href="{{ route('allevents') }}">Events</a></li>
@@ -51,6 +56,7 @@
                     @endcan
 
                     <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
+                    <li><a class="nav-link scrollto" href="{{ route('showsearch') }}">searsh</a></li>
 
                     @if (Route::has('login'))
                         @auth
@@ -68,6 +74,7 @@
 
                                     @can('Manage_users')
                                         <li><a class="dropdown-item " href="{{ route('dashboard') }}">dashbord</a></li>
+                                        <li><a class="dropdown-item " href="{{ route('users') }}">users</a></li>
                                     @endcan
 
                                     <li>
@@ -79,7 +86,6 @@
                                 </ul>
                             </li>
                         @else
-                            <li><a class="nav-link scrollto" href="{{ route('auth') }}">Log In</a></li>
                             @if (Route::has('register'))
                                 <li><a class="getstarted scrollto" href="{{ route('auth') }}">Sign Up</a></li>
                             @endif

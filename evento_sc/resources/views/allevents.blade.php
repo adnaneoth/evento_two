@@ -24,11 +24,14 @@
     </head>
 
     <body>
+
+        
         <!--schedules-sec-->
         <section class="schedule-sec w-100 float-left padding-top padding-bottom">
             <div class="container">
                 <div class="schedule-inner-sec text-center">
                     <div class="generic-title">
+                        
                         @if (session('error'))
                             <div class="alert alert-danger">
                                 {{ session('error') }}
@@ -43,9 +46,11 @@
                                     </a></button>
                             </div>
                         @endcan
+                        
 
-
+                        
                         <h2 class="wow bounceInUp" data-wow-duration="2s">Our Events</h2>
+                        
                         <p class="wow bounceInUp" data-wow-duration="2s">Duis aute irure dolor in reprehenderit in voluptate
                             velit esse cillum dolore eu fugiat nulla pariatur <br>
                             sint occaecat cupidatat non proident.</p>

@@ -83,6 +83,46 @@
                         velit esse cillum dolore eu fugiat nulla pariatur <br>
                         sint occaecat cupidatat non proident.</p>
                 </div>
+                @can('Manage_users')
+                <div class="container">
+                    <div class="row row-cols-1 row-cols-md-3 g-3">
+                      <div class="col">
+                        <div class="card">
+                          <div class="card-body d-flex align-items-center">
+                            <i class="fas fa-user me-3"></i>
+                            <div>
+                              <h5 class="card-title">Events</h5>
+                              <p class="card-text statistic__detail"><?= count($allevents) ?></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="card">
+                          <div class="card-body d-flex align-items-center">
+                            <i class="fas fa-pen me-3"></i>
+                            <div>
+                              <h5 class="card-title">Categories</h5>
+                              <p class="card-text statistic__detail"><?= count($categories) ?></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="card">
+                          <div class="card-body d-flex align-items-center">
+                            <i class="fas fa-users me-3"></i>
+                            <div>
+                              <h5 class="card-title">Users</h5>
+                              <p class="card-text statistic__detail"><?= count($users) ?></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                @endcan
                 @can('Book_an_event')
                     <div class="container event-shedule ">
                         <button class="btn btn" style="background-color: #FF5722;"><a type="button" class="text-light"
@@ -149,7 +189,7 @@
                                                     <button type="button" class="btn btn-warning" data-toggle="modal"
                                                         data-target="#editEventModal{{ $event->id }}"><i
                                                             class="bi bi-pencil"></i></button>
-                                                    <a href="{{ route('detail', $event->id) }}" class="btn btn-primary" >
+                                                    <a href="{{ route('detail', $event->id) }}" class="btn btn-primary">
                                                         <i class="bi bi-info-circle"></i>
                                                     </a>
                                                 @endcan

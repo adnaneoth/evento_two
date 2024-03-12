@@ -64,6 +64,17 @@ Route::patch('/reservation/resaccept/{reservation}', [ReservationController::cla
 Route::patch('/reservation/resrefuse/{reservation}', [ReservationController::class, 'refuse'])->name('resrefuse');
 
 
+Route::post('/search', [EventController::class, 'searchEvents'])->name('search');
+Route::get('search/events', [EventController::class, 'showSearch'])->name('showsearch');
+
+
+Route::get('/users', [EventController::class, 'users'])->middleware(['auth', 'verified'])->name('users');
+Route::patch('/start/{user}', [EventController::class, 'start'])->name('start');
+Route::patch('/stop/{user}', [EventController::class, 'stop'])->name('stop');
+
+Route::post('/events/filterByCategory', [EventController::class, 'filterByCategory'])->name('events.filterByCategory');
+
+
 
 
 require __DIR__ . '/auth.php';
